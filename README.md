@@ -13,9 +13,32 @@ A simple editor configuration for Neovim with CUA (Common User Access) shortcuts
 
 ## Installation
 
+### Quick Install (Recommended)
+
+**One-line remote installation:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/norandom/nvim-simple/main/install.sh | bash
+```
+
+This will:
+- Backup any existing Neovim configuration
+- Download and install the configuration
+- Install vim-plug and all plugins automatically
+- Set up the complete environment
+
+### Manual Installation
+
 1. Ensure you have Neovim installed
-2. Copy the `nvim` directory to `~/.config/nvim` or create a symlink
-3. Open Neovim - plugins will auto-install on first run
+2. Clone this repository: `git clone https://github.com/norandom/nvim-simple.git`
+3. Copy the `nvim` directory to `~/.config/nvim` or create a symlink
+4. Open Neovim - plugins will auto-install on first run
+
+### Temporary Trial (No Installation)
+
+Try the configuration without installing:
+```bash
+curl -s https://raw.githubusercontent.com/norandom/nvim-simple/main/nvim/init.vim > /tmp/nvim-config.vim && nvim -u /tmp/nvim-config.vim +PlugInstall +qall && nvim -u /tmp/nvim-config.vim
+```
 
 ## Keyboard Shortcuts
 
