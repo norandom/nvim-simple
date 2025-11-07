@@ -1,6 +1,6 @@
 # Neovim Easy Configuration
 
-A simple editor configuration for Neovim with CUA (Common User Access) shortcuts, tab bar, mouse support, and menu bar. Optimized for the Gruvbox light theme.
+A simple editor configuration for Neovim with CUA (Common User Access) shortcuts, tab bar, mouse support, and menu bar. Features the Berg colorscheme inspired by Bloomberg terminals.
 
 ## Features
 
@@ -9,15 +9,27 @@ A simple editor configuration for Neovim with CUA (Common User Access) shortcuts
 - **Tab Bar** - Visual tabs for open buffers
 - **Mouse Support** - Full mouse support from terminal
 - **Menu Bar** - Traditional File/Edit/View/Help menus
-- **Gruvbox Light Theme** - Optimized for readability
+- **Berg Theme** - Bloomberg terminal inspired dark theme with excellent readability
 
 ## Installation
 
 ### Quick Install (Recommended)
 
+#### Linux / macOS
 **One-line remote installation:**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/norandom/nvim-simple/main/install.sh | bash
+```
+
+#### Windows
+**PowerShell installation:**
+```powershell
+iwr -useb https://raw.githubusercontent.com/norandom/nvim-simple/main/install.ps1 | iex
+```
+
+Or download and run locally:
+```powershell
+.\install.ps1
 ```
 
 This will:
@@ -25,12 +37,15 @@ This will:
 - Download and install the configuration
 - Install vim-plug and all plugins automatically
 - Set up the complete environment
+- Install the Berg colorscheme
 
 ### Manual Installation
 
 1. Ensure you have Neovim installed
 2. Clone this repository: `git clone https://github.com/norandom/nvim-simple.git`
-3. Copy the `nvim` directory to `~/.config/nvim` or create a symlink
+3. Copy the `nvim` directory to:
+   - Linux/macOS: `~/.config/nvim`
+   - Windows: `%LOCALAPPDATA%\nvim`
 4. Open Neovim - plugins will auto-install on first run
 
 ### Temporary Trial (No Installation)
@@ -101,7 +116,6 @@ Press **F10** to access the menu bar with the following options:
 ## Plugins Used
 
 - **vim-plug** - Plugin manager
-- **gruvbox** - Color scheme
 - **vim-airline** - Status line and tab line
 - **vim-buftabline** - Buffer tabs
 - **vim-quickui** - Menu bar interface
@@ -110,12 +124,15 @@ Press **F10** to access the menu bar with the following options:
 
 ## Theme Configuration
 
-The configuration uses **Gruvbox Light** theme with:
-- Medium contrast for better readability
-- Optimized syntax highlighting
-- Enhanced tab and status line visibility
-- Improved search highlighting
-- Better line number contrast
+The configuration uses the **Berg** colorscheme:
+- Based on Bloomberg terminal aesthetics
+- Dark theme with black background (#000000)
+- Orange primary text (#f49f31) for excellent contrast
+- Red comments (#d54135) that stand out
+- Carefully selected colors for syntax highlighting
+- Optimized for long coding sessions
+- Full Treesitter and LSP support
+- Custom highlights for popular plugins (Telescope, NvimTree, GitSigns)
 
 ## Customization
 

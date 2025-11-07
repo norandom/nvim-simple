@@ -25,13 +25,25 @@ fi
 
 # Create nvim config directory
 echo "📂 Creating Neovim configuration directory..."
-mkdir -p ~/.config/nvim
+mkdir -p ~/.config/nvim/colors
+mkdir -p ~/.config/nvim/lua
 
 # Download the main configuration file
 echo "📥 Downloading init.vim..."
 if ! curl -fsSL https://raw.githubusercontent.com/norandom/nvim-simple/main/nvim/init.vim > ~/.config/nvim/init.vim; then
     echo "❌ Failed to download configuration file"
     echo "   Make sure you have internet connection and the repository is accessible"
+    exit 1
+fi
+
+# Download Berg colorscheme
+echo "🎨 Downloading Berg colorscheme..."
+if ! curl -fsSL https://raw.githubusercontent.com/norandom/nvim-simple/main/nvim/colors/berg.vim > ~/.config/nvim/colors/berg.vim; then
+    echo "❌ Failed to download berg.vim"
+    exit 1
+fi
+if ! curl -fsSL https://raw.githubusercontent.com/norandom/nvim-simple/main/nvim/lua/berg.lua > ~/.config/nvim/lua/berg.lua; then
+    echo "❌ Failed to download berg.lua"
     exit 1
 fi
 
@@ -64,7 +76,7 @@ echo "  • Ctrl+T - New tab"
 echo "  • Ctrl+N - New file"
 echo "  • Ctrl+O - Open file"
 echo ""
-echo "🎨 Theme: Gruvbox Light (optimized for readability)"
+echo "🎨 Theme: Berg (Bloomberg terminal inspired dark theme)"
 echo "📖 Full documentation: https://github.com/norandom/nvim-simple"
 echo ""
 echo "Happy editing! 🎉"

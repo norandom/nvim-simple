@@ -25,9 +25,6 @@ Plug 'preservim/nerdtree'
 " Icons
 Plug 'ryanoasis/vim-devicons'
 
-" Gruvbox colorscheme
-Plug 'morhetz/gruvbox'
-
 call plug#end()
 
 " Basic settings
@@ -48,7 +45,7 @@ set hidden
 set updatetime=300
 set signcolumn=yes
 set termguicolors
-set background=light
+set background=dark
 
 " Start in insert mode
 autocmd VimEnter * startinsert
@@ -94,11 +91,11 @@ let g:buftabline_indicators = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
-let g:airline_theme = 'gruvbox'
+let g:airline_theme = 'dark'
 
 " Menu bar setup
 let g:quickui_show_tip = 1
-let g:quickui_color_scheme = 'gruvbox'
+let g:quickui_color_scheme = 'system'
 
 " Menu content
 let g:quickui_menubar = [
@@ -173,63 +170,8 @@ set incsearch
 " Auto-complete
 set completeopt=menuone,noinsert,noselect
 
-" Gruvbox theme configuration
-let g:gruvbox_contrast_light = 'medium'
-let g:gruvbox_improved_strings = 1
-let g:gruvbox_improved_warnings = 1
-let g:gruvbox_transparent_bg = 0
-let g:gruvbox_sign_column = 'bg0'
-let g:gruvbox_number_column = 'bg1'
-let g:gruvbox_color_column = 'bg1'
-let g:gruvbox_vert_split = 'bg2'
-let g:gruvbox_italicize_comments = 1
-let g:gruvbox_italicize_strings = 0
-
-" Apply colorscheme after plugins load
-autocmd VimEnter * ++nested colorscheme gruvbox
-
-" Custom highlights for better readability in light mode
-autocmd ColorScheme gruvbox highlight Normal guibg=#fbf1c7 guifg=#3c3836
-autocmd ColorScheme gruvbox highlight LineNr guibg=#f2e5bc guifg=#7c6f64
-autocmd ColorScheme gruvbox highlight CursorLineNr guibg=#ebdbb2 guifg=#af3a03 gui=bold
-autocmd ColorScheme gruvbox highlight Visual guibg=#d5c4a1 guifg=#3c3836
-autocmd ColorScheme gruvbox highlight Search guibg=#fabd2f guifg=#1d2021
-autocmd ColorScheme gruvbox highlight IncSearch guibg=#fe8019 guifg=#1d2021
-autocmd ColorScheme gruvbox highlight StatusLine guibg=#d5c4a1 guifg=#3c3836
-autocmd ColorScheme gruvbox highlight StatusLineNC guibg=#ebdbb2 guifg=#665c54
-autocmd ColorScheme gruvbox highlight TabLine guibg=#ebdbb2 guifg=#665c54
-autocmd ColorScheme gruvbox highlight TabLineSel guibg=#d5c4a1 guifg=#3c3836 gui=bold
-autocmd ColorScheme gruvbox highlight TabLineFill guibg=#f2e5bc
-autocmd ColorScheme gruvbox highlight Comment guifg=#928374 gui=italic
-autocmd ColorScheme gruvbox highlight String guifg=#79740e
-autocmd ColorScheme gruvbox highlight Keyword guifg=#9d0006 gui=bold
-autocmd ColorScheme gruvbox highlight Function guifg=#b57614 gui=bold
-autocmd ColorScheme gruvbox highlight Type guifg=#af3a03 gui=bold
-autocmd ColorScheme gruvbox highlight Constant guifg=#8f3f71
-autocmd ColorScheme gruvbox highlight PreProc guifg=#427b58
-autocmd ColorScheme gruvbox highlight Special guifg=#d79921
-autocmd ColorScheme gruvbox highlight Error guibg=#cc241d guifg=#fbf1c7
-autocmd ColorScheme gruvbox highlight Warning guibg=#d79921 guifg=#3c3836
-autocmd ColorScheme gruvbox highlight Directory guifg=#427b58 gui=bold
-autocmd ColorScheme gruvbox highlight Title guifg=#af3a03 gui=bold
-autocmd ColorScheme gruvbox highlight MatchParen guibg=#fe8019 guifg=#1d2021 gui=bold
-autocmd ColorScheme gruvbox highlight Pmenu guibg=#ebdbb2 guifg=#3c3836
-autocmd ColorScheme gruvbox highlight PmenuSel guibg=#d5c4a1 guifg=#3c3836 gui=bold
-autocmd ColorScheme gruvbox highlight PmenuSbar guibg=#d5c4a1
-autocmd ColorScheme gruvbox highlight PmenuThumb guibg=#665c54
-
-" NERDTree colors
-autocmd ColorScheme gruvbox highlight NERDTreeDir guifg=#427b58 gui=bold
-autocmd ColorScheme gruvbox highlight NERDTreeFile guifg=#3c3836
-autocmd ColorScheme gruvbox highlight NERDTreeExecFile guifg=#b57614 gui=bold
-autocmd ColorScheme gruvbox highlight NERDTreeOpenable guifg=#d79921
-autocmd ColorScheme gruvbox highlight NERDTreeClosable guifg=#d79921
-
-" Buftabline colors for better contrast
-autocmd ColorScheme gruvbox highlight BufTabLineCurrent guibg=#d5c4a1 guifg=#3c3836 gui=bold
-autocmd ColorScheme gruvbox highlight BufTabLineActive guibg=#ebdbb2 guifg=#3c3836
-autocmd ColorScheme gruvbox highlight BufTabLineHidden guibg=#f2e5bc guifg=#665c54
-autocmd ColorScheme gruvbox highlight BufTabLineFill guibg=#f2e5bc
+" Apply Berg colorscheme after plugins load
+autocmd VimEnter * ++nested colorscheme berg
 
 " Show menu bar hint
 echo "Press F10 for menu bar, F2 for file explorer"
