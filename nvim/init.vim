@@ -97,36 +97,39 @@ let g:airline_theme = 'dark'
 let g:quickui_show_tip = 1
 let g:quickui_color_scheme = 'system'
 
-" Menu content
-let g:quickui_menubar = [
-    \ ['&File', [
-        \ ['&New\tCtrl+N', 'enew'],
-        \ ['&Open\tCtrl+O', 'browse edit'],
-        \ ['--', ''],
-        \ ['&Save\tCtrl+S', 'write'],
-        \ ['Save &As', 'browse saveas'],
-        \ ['--', ''],
-        \ ['&Close\tCtrl+W', 'close'],
-        \ ['E&xit', 'qa'],
-        \ ]],
-    \ ['&Edit', [
-        \ ['&Undo\tCtrl+Z', 'undo'],
-        \ ['&Redo\tCtrl+Y', 'redo'],
-        \ ['--', ''],
-        \ ['&Cut\tCtrl+X', 'normal! "+x'],
-        \ ['&Copy\tCtrl+C', 'normal! "+y'],
-        \ ['&Paste\tCtrl+V', 'normal! "+p'],
-        \ ['--', ''],
-        \ ['Select &All\tCtrl+A', 'normal! ggVG'],
-        \ ]],
-    \ ['&View', [
-        \ ['&File Explorer\tF2', 'NERDTreeToggle'],
-        \ ['&Toggle Line Numbers', 'set number!'],
-        \ ]],
-    \ ['&Help', [
-        \ ['&About', 'version'],
-        \ ]],
-    \ ]
+" Clear and install menu content
+call quickui#menu#reset()
+
+call quickui#menu#install('&File', [
+    \ ['&New\tCtrl+N', 'enew'],
+    \ ['&Open\tCtrl+O', 'browse edit'],
+    \ ['--', ''],
+    \ ['&Save\tCtrl+S', 'write'],
+    \ ['Save &As', 'browse saveas'],
+    \ ['--', ''],
+    \ ['&Close\tCtrl+W', 'close'],
+    \ ['E&xit', 'qa'],
+    \ ])
+
+call quickui#menu#install('&Edit', [
+    \ ['&Undo\tCtrl+Z', 'undo'],
+    \ ['&Redo\tCtrl+Y', 'redo'],
+    \ ['--', ''],
+    \ ['&Cut\tCtrl+X', 'normal! "+x'],
+    \ ['&Copy\tCtrl+C', 'normal! "+y'],
+    \ ['&Paste\tCtrl+V', 'normal! "+p'],
+    \ ['--', ''],
+    \ ['Select &All\tCtrl+A', 'normal! ggVG'],
+    \ ])
+
+call quickui#menu#install('&View', [
+    \ ['&File Explorer\tF2', 'NERDTreeToggle'],
+    \ ['&Toggle Line Numbers', 'set number!'],
+    \ ])
+
+call quickui#menu#install('&Help', [
+    \ ['&About', 'version'],
+    \ ])
 
 " Enable menu bar
 noremap <F10> :call quickui#menu#open()<CR>
