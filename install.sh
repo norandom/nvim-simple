@@ -57,7 +57,18 @@ fi
 
 # Install plugins
 echo "🔌 Installing Neovim plugins (this may take a few minutes)..."
-nvim --headless +PlugInstall +qa
+nvim --headless +PlugInstall +qall 2>&1 | grep -v "guioptions" | grep -v "^$" || true
+
+# Wait a moment for plugin installation to complete
+sleep 2
+
+# Verify plugin installation
+echo "🔍 Verifying plugin installation..."
+if [ ! -d ~/.config/nvim/plugged/vim-quickui ]; then
+    echo "⚠️  Some plugins may not have installed correctly. Running second pass..."
+    nvim --headless +PlugInstall +qall 2>&1 | grep -v "guioptions" | grep -v "^$" || true
+    sleep 1
+fi
 
 echo ""
 echo "✨ Installation complete!"

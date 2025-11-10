@@ -76,7 +76,19 @@ try {
 
 # Install plugins
 Write-Host "Installing Neovim plugins (this may take a few minutes)..." -ForegroundColor Cyan
-& nvim --headless +PlugInstall +qa
+& nvim --headless +PlugInstall +qall 2>&1 | Where-Object { $_ -notmatch 'guioptions' -and $_ -notmatch '^$' }
+
+# Wait for plugin installation to complete
+Start-Sleep -Seconds 2
+
+# Verify plugin installation
+Write-Host "Verifying plugin installation..." -ForegroundColor Cyan
+$pluginPath = "$nvimPath\plugged\vim-quickui"
+if (-not (Test-Path $pluginPath)) {
+    Write-Host "  Some plugins may not have installed correctly. Running second pass..." -ForegroundColor Yellow
+    & nvim --headless +PlugInstall +qall 2>&1 | Where-Object { $_ -notmatch 'guioptions' -and $_ -notmatch '^$' }
+    Start-Sleep -Seconds 1
+}
 
 Write-Host ""
 Write-Host "Installation complete!" -ForegroundColor Green

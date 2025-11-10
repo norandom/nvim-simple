@@ -97,39 +97,49 @@ let g:airline_theme = 'dark'
 let g:quickui_show_tip = 1
 let g:quickui_color_scheme = 'system'
 
-" Clear and install menu content
-call quickui#menu#reset()
+" Function to setup menu after plugins load
+function! SetupMenu()
+    if !exists('*quickui#menu#reset')
+        return
+    endif
 
-call quickui#menu#install('&File', [
-    \ ['&New\tCtrl+N', 'enew'],
-    \ ['&Open\tCtrl+O', 'browse edit'],
-    \ ['--', ''],
-    \ ['&Save\tCtrl+S', 'write'],
-    \ ['Save &As', 'browse saveas'],
-    \ ['--', ''],
-    \ ['&Close\tCtrl+W', 'close'],
-    \ ['E&xit', 'qa'],
-    \ ])
+    " Clear and install menu content
+    call quickui#menu#reset()
 
-call quickui#menu#install('&Edit', [
-    \ ['&Undo\tCtrl+Z', 'undo'],
-    \ ['&Redo\tCtrl+Y', 'redo'],
-    \ ['--', ''],
-    \ ['&Cut\tCtrl+X', 'normal! "+x'],
-    \ ['&Copy\tCtrl+C', 'normal! "+y'],
-    \ ['&Paste\tCtrl+V', 'normal! "+p'],
-    \ ['--', ''],
-    \ ['Select &All\tCtrl+A', 'normal! ggVG'],
-    \ ])
+    call quickui#menu#install('&File', [
+        \ ['&New\tCtrl+N', 'enew'],
+        \ ['&Open\tCtrl+O', 'browse edit'],
+        \ ['--', ''],
+        \ ['&Save\tCtrl+S', 'write'],
+        \ ['Save &As', 'browse saveas'],
+        \ ['--', ''],
+        \ ['&Close\tCtrl+W', 'close'],
+        \ ['E&xit', 'qa'],
+        \ ])
 
-call quickui#menu#install('&View', [
-    \ ['&File Explorer\tF2', 'NERDTreeToggle'],
-    \ ['&Toggle Line Numbers', 'set number!'],
-    \ ])
+    call quickui#menu#install('&Edit', [
+        \ ['&Undo\tCtrl+Z', 'undo'],
+        \ ['&Redo\tCtrl+Y', 'redo'],
+        \ ['--', ''],
+        \ ['&Cut\tCtrl+X', 'normal! "+x'],
+        \ ['&Copy\tCtrl+C', 'normal! "+y'],
+        \ ['&Paste\tCtrl+V', 'normal! "+p'],
+        \ ['--', ''],
+        \ ['Select &All\tCtrl+A', 'normal! ggVG'],
+        \ ])
 
-call quickui#menu#install('&Help', [
-    \ ['&About', 'version'],
-    \ ])
+    call quickui#menu#install('&View', [
+        \ ['&File Explorer\tF2', 'NERDTreeToggle'],
+        \ ['&Toggle Line Numbers', 'set number!'],
+        \ ])
+
+    call quickui#menu#install('&Help', [
+        \ ['&About', 'version'],
+        \ ])
+endfunction
+
+" Call menu setup after plugins load
+autocmd VimEnter * call SetupMenu()
 
 " Enable menu bar
 noremap <F10> :call quickui#menu#open()<CR>
@@ -176,5 +186,5 @@ set completeopt=menuone,noinsert,noselect
 " Apply Berg colorscheme after plugins load
 autocmd VimEnter * ++nested colorscheme berg
 
-" Show menu bar hint
-echo "Press F10 for menu bar, F2 for file explorer"
+" Show menu bar hint after everything loads
+autocmd VimEnter * echo "Press F10 for menu bar, F2 for file explorer"
