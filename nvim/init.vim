@@ -103,7 +103,31 @@ let g:buftabline_indicators = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline#extensions#tabline#show_tab_type = 1
+let g:airline#extensions#tabline#tab_nr_type = 1
 let g:airline_theme = 'dark'
+
+" Custom tab title function
+function! AirlineTabTitle(n)
+    let buflist = tabpagebuflist(a:n)
+    let winnr = tabpagewinnr(a:n)
+    let bufnr = buflist[winnr - 1]
+    " Check if custom title exists
+    let title = gettabvar(a:n, 'tab_title')
+    if !empty(title)
+        return title
+    endif
+    " Default to buffer name
+    let name = bufname(bufnr)
+    if empty(name)
+        return '[No Name]'
+    elseif name =~ 'term://'
+        return 'Terminal'
+    else
+        return fnamemodify(name, ':t')
+    endif
+endfunction
+let g:airline#extensions#tabline#tabnr_formatter = 'AirlineTabTitle'
 
 " Override airline symbols for ASCII mode (duplicates removed - set at top)
 if !exists('g:airline_symbols')
@@ -151,6 +175,23 @@ call quickui#menu#install("&Option", [
             \ ['Set &Paste %{&paste? "Off":"On"}', 'set paste!'],
             \ ])
 
+" Terminal menu
+call quickui#menu#install('&Terminal', [
+            \ ['&New Terminal Tab', 'tabnew | terminal'],
+            \ ['&Split Terminal', 'split | terminal'],
+            \ ['&Vertical Split Terminal', 'vsplit | terminal'],
+            \ ['--', ''],
+            \ ['&Close Terminal', 'if &buftype=="terminal" | bd! | endif'],
+            \ ['&Kill Terminal Process', 'if &buftype=="terminal" | bd! | endif'],
+            \ ['--', ''],
+            \ ['&Next Tab\tCtrl+Tab', 'tabnext'],
+            \ ['&Previous Tab\tCtrl+Shift+Tab', 'tabprevious'],
+            \ ['--', ''],
+            \ ['Rename &Tab Title', 'call inputsave() | let t:tab_title=input("Tab title: ") | call inputrestore()'],
+            \ ['--', ''],
+            \ ['&File Explorer\tF2', 'NERDTreeToggle'],
+            \ ])
+
 " Help menu
 call quickui#menu#install('H&elp', [
             \ ["&Cheatsheet", 'help index', ''],
@@ -160,10 +201,12 @@ call quickui#menu#install('H&elp', [
             \ ['&Quick Reference', 'help quickref', ''],
             \ ], 10000)
 
-" Enable menu keybindings
+" Enable menu keybindings (including from terminal mode)
 noremap <silent><F10> :call quickui#menu#open()<CR>
 inoremap <silent><F10> <Esc>:call quickui#menu#open()<CR>
+tnoremap <silent><F10> <C-\><C-n>:call quickui#menu#open()<CR>
 noremap <space><space> :call quickui#menu#open()<CR>
+tnoremap <space><space> <C-\><C-n>:call quickui#menu#open()<CR>
 
 " File operations
 nnoremap <C-n> :enew<CR>
@@ -202,6 +245,30 @@ set incsearch
 
 " Auto-complete
 set completeopt=menuone,noinsert,noselect
+
+" Terminal settings - clean UI and better usability
+autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
+" Auto-enter insert mode when opening terminal
+autocmd TermOpen * startinsert
+" Auto-enter insert mode when entering terminal buffer
+autocmd BufEnter term://* startinsert
+" Hide status line in terminal for cleaner look
+autocmd TermOpen * setlocal laststatus=0
+
+" Terminal keybindings (SSH/Mac friendly)
+" F3 opens terminal in new tab (works over SSH)
+nnoremap <F3> :tabnew \| terminal<CR>
+inoremap <F3> <Esc>:tabnew \| terminal<CR>
+" Leader+t as alternative (default leader is backslash)
+nnoremap <Leader>t :tabnew \| terminal<CR>
+inoremap <Leader>t <Esc>:tabnew \| terminal<CR>
+" ESC in terminal mode enters normal mode (for scrolling/copying)
+tnoremap <Esc> <C-\><C-n>
+" Ctrl+W closes terminal tab from terminal mode
+tnoremap <C-w> <C-\><C-n>:q<CR>
+" Tab navigation from terminal mode (works over SSH)
+tnoremap <C-PageUp> <C-\><C-n>:tabprevious<CR>
+tnoremap <C-PageDown> <C-\><C-n>:tabnext<CR>
 
 " Apply Berg colorscheme after plugins load
 autocmd VimEnter * ++nested colorscheme berg
