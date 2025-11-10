@@ -265,3 +265,14 @@ hi! link TSPunctBracket Delimiter
 hi! link TSPunctDelimiter Delimiter
 hi! link TSTag Tag
 hi! link TSTagDelimiter Delimiter
+
+" QuickUI highlight groups - Bloomberg terminal style with dark red background
+let s:darkred = { "gui": "#2d0000", "cterm": "52" }
+call s:HL('QuickDefaultBackground', s:fg, s:darkred, 'none')
+call s:HL('QuickDefaultSel', s:black, s:orange, 'bold')
+call s:HL('QuickDefaultKey', s:cyan, s:darkred, 'bold')
+call s:HL('QuickDefaultDisable', s:gray, s:darkred, 'none')
+call s:HL('QuickDefaultHelp', s:bright_green, s:darkred, 'none')
+call s:HL('QuickDefaultBorder', s:red, s:darkred, 'none')
+call s:HL('QuickDefaultTermBorder', s:red, s:darkred, 'none')
+call s:HL('QuickDefaultPreview', {}, s:darkred, 'none')

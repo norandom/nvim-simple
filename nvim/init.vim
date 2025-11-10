@@ -6,6 +6,18 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+" Configure plugins BEFORE loading them
+" Disable powerline fonts - use ASCII only
+let g:airline_powerline_fonts = 0
+let g:airline_symbols_ascii = 1
+" Disable devicons to prevent Unicode issues
+let g:webdevicons_enable = 0
+let g:webdevicons_enable_nerdtree = 0
+let g:webdevicons_enable_airline_tabline = 0
+let g:webdevicons_enable_airline_statusline = 0
+" QuickUI ASCII mode
+let g:quickui_border_style = 1
+
 " vim-plug plugins
 call plug#begin('~/.config/nvim/plugged')
 
@@ -93,57 +105,65 @@ let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline_theme = 'dark'
 
+" Override airline symbols for ASCII mode (duplicates removed - set at top)
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = 'RO'
+let g:airline_symbols.linenr = 'LN'
+let g:airline_symbols.maxlinenr = ''
+let g:airline_symbols.dirty = '*'
+
 " Menu bar setup
 let g:quickui_show_tip = 1
 let g:quickui_color_scheme = 'system'
 
-" Function to setup menu after plugins load
-function! SetupMenu()
-    if !exists('*quickui#menu#reset')
-        return
-    endif
+" Setup menu directly - clear all the menus
+call quickui#menu#reset()
 
-    " Clear and install menu content
-    call quickui#menu#reset()
+" install a 'File' menu
+call quickui#menu#install('&File', [
+            \ [ "&New File\tCtrl+n", 'enew' ],
+            \ [ "&Open File\tCtrl+o", 'browse edit' ],
+            \ [ "&Close", 'close' ],
+            \ [ "--", '' ],
+            \ [ "&Save\tCtrl+s", 'write'],
+            \ [ "Save &As", 'browse saveas' ],
+            \ [ "--", '' ],
+            \ [ "E&xit", 'qa' ],
+            \ ])
 
-    call quickui#menu#install('&File', [
-        \ ['&New\tCtrl+N', 'enew'],
-        \ ['&Open\tCtrl+O', 'browse edit'],
-        \ ['--', ''],
-        \ ['&Save\tCtrl+S', 'write'],
-        \ ['Save &As', 'browse saveas'],
-        \ ['--', ''],
-        \ ['&Close\tCtrl+W', 'close'],
-        \ ['E&xit', 'qa'],
-        \ ])
+" Edit menu with tips
+call quickui#menu#install('&Edit', [
+            \ [ '&Copy\tCtrl+c', 'normal! "+y', 'Copy to clipboard' ],
+            \ [ '&Paste\tCtrl+v', 'normal! "+p', 'Paste from clipboard' ],
+            \ [ '&Undo\tCtrl+z', 'undo', 'Undo last change' ],
+            \ [ '&Redo\tCtrl+y', 'redo', 'Redo last undo' ],
+            \ ])
 
-    call quickui#menu#install('&Edit', [
-        \ ['&Undo\tCtrl+Z', 'undo'],
-        \ ['&Redo\tCtrl+Y', 'redo'],
-        \ ['--', ''],
-        \ ['&Cut\tCtrl+X', 'normal! "+x'],
-        \ ['&Copy\tCtrl+C', 'normal! "+y'],
-        \ ['&Paste\tCtrl+V', 'normal! "+p'],
-        \ ['--', ''],
-        \ ['Select &All\tCtrl+A', 'normal! ggVG'],
-        \ ])
+" Option menu with dynamic status
+call quickui#menu#install("&Option", [
+            \ ['Set &Spell %{&spell? "Off":"On"}', 'set spell!'],
+            \ ['Set &Cursor Line %{&cursorline? "Off":"On"}', 'set cursorline!'],
+            \ ['Set &Paste %{&paste? "Off":"On"}', 'set paste!'],
+            \ ])
 
-    call quickui#menu#install('&View', [
-        \ ['&File Explorer\tF2', 'NERDTreeToggle'],
-        \ ['&Toggle Line Numbers', 'set number!'],
-        \ ])
+" Help menu
+call quickui#menu#install('H&elp', [
+            \ ["&Cheatsheet", 'help index', ''],
+            \ ['T&ips', 'help tips', ''],
+            \ ['--',''],
+            \ ["&Tutorial", 'help tutor', ''],
+            \ ['&Quick Reference', 'help quickref', ''],
+            \ ], 10000)
 
-    call quickui#menu#install('&Help', [
-        \ ['&About', 'version'],
-        \ ])
-endfunction
-
-" Call menu setup after plugins load
-autocmd VimEnter * call SetupMenu()
-
-" Enable menu bar
-noremap <F10> :call quickui#menu#open()<CR>
-inoremap <F10> <Esc>:call quickui#menu#open()<CR>
+" Enable menu keybindings
+noremap <silent><F10> :call quickui#menu#open()<CR>
+inoremap <silent><F10> <Esc>:call quickui#menu#open()<CR>
+noremap <space><space> :call quickui#menu#open()<CR>
 
 " File operations
 nnoremap <C-n> :enew<CR>
