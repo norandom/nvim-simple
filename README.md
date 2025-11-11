@@ -86,6 +86,12 @@ curl -s https://raw.githubusercontent.com/norandom/nvim-simple/main/nvim/init.vi
 - **Home/End** - Move to beginning/end of line
 - **Page Up/Down** - Page navigation
 
+### Terminal Mode
+- **F3** - Open terminal in new tab
+- **Ctrl+C** - Send interrupt signal (works in terminal mode)
+- **Ctrl+PageUp/PageDown** - Navigate between tabs from terminal
+- **Esc** - Exit terminal mode to normal mode (for scrolling/copying)
+
 ## Menu Bar
 
 Press **F10** to access the menu bar with the following options:
@@ -141,6 +147,13 @@ The main configuration file is `nvim/init.vim`. You can modify:
 - Keyboard shortcuts
 - Plugin configurations
 - Menu bar contents
+
+## Recent Bug Fixes
+
+### Terminal Neovim Compatibility
+- **Fixed E519 error**: Automatically patches vim-buftabline to be compatible with terminal Neovim (fixes `guioptions` not supported error)
+- **Ctrl+C in terminal**: Added proper terminal mode mapping so Ctrl+C sends interrupt signal to running processes
+- **Auto-patch on startup**: Plugin compatibility patches are applied automatically on first load
 
 ## Troubleshooting
 

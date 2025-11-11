@@ -39,6 +39,41 @@ Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
 
+" Auto-patch vim-buftabline for terminal Neovim compatibility
+" Fixes E519: Option not supported: guioptions error
+augroup PatchBuftabline
+  autocmd!
+  autocmd VimEnter * call s:PatchBuftabline()
+augroup END
+
+function! s:PatchBuftabline()
+  let buftabline_file = expand('~/.config/nvim/plugged/vim-buftabline/plugin/buftabline.vim')
+  if filereadable(buftabline_file)
+    let lines = readfile(buftabline_file)
+    let modified = 0
+    for i in range(len(lines))
+      " Patch line 173: if tabpagenr('$') > 1 | set guioptions+=e showtabline=2 | return | endif
+      if lines[i] =~# 'if tabpagenr.*set guioptions+=e.*showtabline'
+        let lines[i] = "\tif tabpagenr('$') > 1"
+        call insert(lines, "\t\tif has('gui_running') | set guioptions+=e | endif", i+1)
+        call insert(lines, "\t\tset showtabline=2", i+2)
+        call insert(lines, "\t\treturn", i+3)
+        call insert(lines, "\tendif", i+4)
+        let modified = 1
+        break
+      endif
+      " Patch line 174: set guioptions-=e
+      if !modified && lines[i] =~# '^\s*set guioptions-=e\s*$'
+        let lines[i] = "\tif has('gui_running') | set guioptions-=e | endif"
+        let modified = 1
+      endif
+    endfor
+    if modified
+      call writefile(lines, buftabline_file)
+    endif
+  endif
+endfunction
+
 " Basic settings
 set number
 set relativenumber
@@ -264,6 +299,8 @@ nnoremap <Leader>t :tabnew \| terminal<CR>
 inoremap <Leader>t <Esc>:tabnew \| terminal<CR>
 " ESC in terminal mode enters normal mode (for scrolling/copying)
 tnoremap <Esc> <C-\><C-n>
+" Ctrl+C in terminal mode sends interrupt signal to process
+tnoremap <C-c> <C-c>
 " Ctrl+W closes terminal tab from terminal mode
 tnoremap <C-w> <C-\><C-n>:q<CR>
 " Tab navigation from terminal mode (works over SSH)

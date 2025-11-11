@@ -1,0 +1,11 @@
+# Vim/Neovim plugin directories (installed by vim-plug)
+nvim/plugged/
+
+# Vim swap files
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
