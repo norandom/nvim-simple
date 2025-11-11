@@ -79,6 +79,13 @@ set number
 set relativenumber
 set mouse=a
 set clipboard=unnamedplus
+
+" Encoding and character normalization
+set encoding=utf-8
+set fileencoding=utf-8
+scriptencoding utf-8
+" Force UTF-8 in terminal buffers
+let &t_ut=''
 set autoindent
 set smartindent
 set tabstop=4
@@ -289,6 +296,12 @@ autocmd TermOpen * startinsert
 autocmd BufEnter term://* startinsert
 " Hide status line in terminal for cleaner look
 autocmd TermOpen * setlocal laststatus=0
+" Set proper environment variables for terminal encoding
+let $LANG='en_US.UTF-8'
+let $LC_ALL='en_US.UTF-8'
+let $LC_CTYPE='en_US.UTF-8'
+" Force term type to support 256 colors and UTF-8
+let $TERM='xterm-256color'
 
 " Terminal keybindings (SSH/Mac friendly)
 " F3 opens terminal in new tab (works over SSH)

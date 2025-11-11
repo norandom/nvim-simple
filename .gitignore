@@ -9,3 +9,9 @@ nvim/plugged/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Screenshots and debug images
+*.png
+*.jpg
+*.jpeg
+*.gif
