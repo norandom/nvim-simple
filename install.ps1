@@ -84,18 +84,7 @@ try {
 # Install plugins
 Write-Host "Installing Neovim plugins (this may take a few minutes)..." -ForegroundColor Cyan
 $plugOutput = & nvim --headless --noplugin +'set nomore' +PlugInstall +qall 2>&1
-# Filter and display only relevant messages
-$plugOutput | Where-Object { 
-    $_ -and 
-    $_ -is [string] -and 
-    $_ -notmatch 'guioptions' -and 
-    $_ -notmatch 'buftabline' -and 
-    $_ -notmatch 'TabEnter' -and 
-    $_ -notmatch 'Error detected' -and
-    $_ -notmatch '^Press.*menu' -and
-    $_ -notmatch '^\s*$' -and
-    $_ -match '\S'
-} | ForEach-Object { Write-Host "  $_" }
+$plugOutput | ForEach-Object { Write-Host "  $_" }
 
 # Wait for plugin installation to complete
 Start-Sleep -Seconds 2
@@ -106,17 +95,7 @@ $pluginPath = "$nvimPath\plugged\vim-quickui"
 if (-not (Test-Path $pluginPath)) {
     Write-Host "  Some plugins may not have installed correctly. Running second pass..." -ForegroundColor Yellow
     $plugOutput2 = & nvim --headless --noplugin +'set nomore' +PlugInstall +qall 2>&1
-    $plugOutput2 | Where-Object { 
-        $_ -and 
-        $_ -is [string] -and 
-        $_ -notmatch 'guioptions' -and 
-        $_ -notmatch 'buftabline' -and 
-        $_ -notmatch 'TabEnter' -and 
-        $_ -notmatch 'Error detected' -and
-        $_ -notmatch '^Press.*menu' -and
-        $_ -notmatch '^\s*$' -and
-        $_ -match '\S'
-    } | ForEach-Object { Write-Host "  $_" }
+    $plugOutput2 | ForEach-Object { Write-Host "  $_" }
     Start-Sleep -Seconds 1
 } else {
     Write-Host "  All plugins installed successfully!" -ForegroundColor Green

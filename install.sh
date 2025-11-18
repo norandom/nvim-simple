@@ -28,23 +28,36 @@ echo "📂 Creating Neovim configuration directory..."
 mkdir -p ~/.config/nvim/colors
 mkdir -p ~/.config/nvim/lua
 
-# Download the main configuration file
-echo "📥 Downloading init.vim..."
-if ! curl -fsSL https://raw.githubusercontent.com/norandom/nvim-simple/main/nvim/init.vim > ~/.config/nvim/init.vim; then
-    echo "❌ Failed to download configuration file"
-    echo "   Make sure you have internet connection and the repository is accessible"
-    exit 1
-fi
+# Check if running from local repo
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -f "$SCRIPT_DIR/nvim/init.vim" ]; then
+    echo "📦 Installing from local repository..."
+    
+    echo "   Copying init.vim..."
+    cp "$SCRIPT_DIR/nvim/init.vim" ~/.config/nvim/init.vim
+    
+    echo "   Copying Berg colorscheme..."
+    cp "$SCRIPT_DIR/nvim/colors/berg.vim" ~/.config/nvim/colors/berg.vim
+    cp "$SCRIPT_DIR/nvim/lua/berg.lua" ~/.config/nvim/lua/berg.lua
+else
+    # Download the main configuration file
+    echo "📥 Downloading init.vim..."
+    if ! curl -fsSL https://raw.githubusercontent.com/norandom/nvim-simple/main/nvim/init.vim > ~/.config/nvim/init.vim; then
+        echo "❌ Failed to download configuration file"
+        echo "   Make sure you have internet connection and the repository is accessible"
+        exit 1
+    fi
 
-# Download Berg colorscheme
-echo "🎨 Downloading Berg colorscheme..."
-if ! curl -fsSL https://raw.githubusercontent.com/norandom/nvim-simple/main/nvim/colors/berg.vim > ~/.config/nvim/colors/berg.vim; then
-    echo "❌ Failed to download berg.vim"
-    exit 1
-fi
-if ! curl -fsSL https://raw.githubusercontent.com/norandom/nvim-simple/main/nvim/lua/berg.lua > ~/.config/nvim/lua/berg.lua; then
-    echo "❌ Failed to download berg.lua"
-    exit 1
+    # Download Berg colorscheme
+    echo "🎨 Downloading Berg colorscheme..."
+    if ! curl -fsSL https://raw.githubusercontent.com/norandom/nvim-simple/main/nvim/colors/berg.vim > ~/.config/nvim/colors/berg.vim; then
+        echo "❌ Failed to download berg.vim"
+        exit 1
+    fi
+    if ! curl -fsSL https://raw.githubusercontent.com/norandom/nvim-simple/main/nvim/lua/berg.lua > ~/.config/nvim/lua/berg.lua; then
+        echo "❌ Failed to download berg.lua"
+        exit 1
+    fi
 fi
 
 # Create autoload directory and download vim-plug
@@ -57,7 +70,7 @@ fi
 
 # Install plugins
 echo "🔌 Installing Neovim plugins (this may take a few minutes)..."
-nvim --headless +PlugInstall +qall 2>&1 | grep -v "guioptions" | grep -v "^$" || true
+nvim --headless +PlugInstall +qall
 
 # Wait a moment for plugin installation to complete
 sleep 2
@@ -66,7 +79,7 @@ sleep 2
 echo "🔍 Verifying plugin installation..."
 if [ ! -d ~/.config/nvim/plugged/vim-quickui ]; then
     echo "⚠️  Some plugins may not have installed correctly. Running second pass..."
-    nvim --headless +PlugInstall +qall 2>&1 | grep -v "guioptions" | grep -v "^$" || true
+    nvim --headless +PlugInstall +qall
     sleep 1
 fi
 
