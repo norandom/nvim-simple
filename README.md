@@ -9,7 +9,15 @@ A simple editor configuration for Neovim with CUA (Common User Access) shortcuts
 - Tab bar for open buffers
 - Mouse support
 - Menu bar (File/Edit/View/Help)
-- Berg theme — dark Bloomberg-terminal-style colors
+- Berg theme — dark and light variants (F4 to toggle)
+
+## Screenshots
+
+### Dark theme (Berg)
+![Berg dark theme](screenshots/berg-dark.png)
+
+### Light theme (Berg Light)
+![Berg light theme](screenshots/berg-light.png)
 
 ## Installation
 
