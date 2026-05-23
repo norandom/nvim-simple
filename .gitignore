@@ -11,7 +11,9 @@ nvim/plugged/
 Thumbs.db
 
 # Screenshots and debug images
-*.png
 *.jpg
 *.jpeg
 *.gif
+
+# But allow screenshots directory
+!screenshots/*.png

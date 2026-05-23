@@ -174,6 +174,8 @@ function! SetupQuickUI()
                     \ ['Set &Spell %{&spell? "Off":"On"}', 'set spell!'],
                     \ ['Set &Cursor Line %{&cursorline? "Off":"On"}', 'set cursorline!'],
                     \ ['Set &Paste %{&paste? "Off":"On"}', 'set paste!'],
+                    \ ['--', ''],
+                    \ ['&Toggle Light/Dark Theme\tF4', 'call ToggleTheme()'],
                     \ ])
 
         " Terminal menu
@@ -296,8 +298,24 @@ tnoremap <C-w> <C-\><C-n>:q<CR>
 tnoremap <C-PageUp> <C-\><C-n>:tabprevious<CR>
 tnoremap <C-PageDown> <C-\><C-n>:tabnext<CR>
 
+" Theme toggle function
+function! ToggleTheme()
+  if g:colors_name ==# 'berg'
+    colorscheme berg-light
+    let g:airline_theme = 'light'
+  else
+    colorscheme berg
+    let g:airline_theme = 'dark'
+  endif
+  AirlineRefresh
+endfunction
+
 " Apply Berg colorscheme after plugins load
 autocmd VimEnter * ++nested colorscheme berg
 
+" Theme toggle keybinding
+nnoremap <F4> :call ToggleTheme()<CR>
+inoremap <F4> <Esc>:call ToggleTheme()<CR>a
+
 " Show menu bar hint after everything loads
-autocmd VimEnter * echo "Press F10 for menu bar, F2 for file explorer"
+autocmd VimEnter * echo "F10: menu | F2: explorer | F4: light/dark theme"

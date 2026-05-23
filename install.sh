@@ -38,7 +38,9 @@ if [ -f "$SCRIPT_DIR/nvim/init.vim" ]; then
     
     echo "   Copying Berg colorscheme..."
     cp "$SCRIPT_DIR/nvim/colors/berg.vim" ~/.config/nvim/colors/berg.vim
+    cp "$SCRIPT_DIR/nvim/colors/berg-light.vim" ~/.config/nvim/colors/berg-light.vim
     cp "$SCRIPT_DIR/nvim/lua/berg.lua" ~/.config/nvim/lua/berg.lua
+    cp "$SCRIPT_DIR/nvim/lua/berg-light.lua" ~/.config/nvim/lua/berg-light.lua
 else
     # Download the main configuration file
     echo "Downloading init.vim..."
@@ -54,8 +56,16 @@ else
         echo "Failed to download berg.vim"
         exit 1
     fi
+    if ! curl -fsSL https://raw.githubusercontent.com/norandom/nvim-simple/main/nvim/colors/berg-light.vim > ~/.config/nvim/colors/berg-light.vim; then
+        echo "Failed to download berg-light.vim"
+        exit 1
+    fi
     if ! curl -fsSL https://raw.githubusercontent.com/norandom/nvim-simple/main/nvim/lua/berg.lua > ~/.config/nvim/lua/berg.lua; then
         echo "Failed to download berg.lua"
+        exit 1
+    fi
+    if ! curl -fsSL https://raw.githubusercontent.com/norandom/nvim-simple/main/nvim/lua/berg-light.lua > ~/.config/nvim/lua/berg-light.lua; then
+        echo "Failed to download berg-light.lua"
         exit 1
     fi
 fi
