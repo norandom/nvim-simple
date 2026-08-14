@@ -5,25 +5,27 @@
 
 Write-Host "Installing Neovim Easy Configuration..." -ForegroundColor Cyan
 
-# Check if nvim is installed
-if (-not (Get-Command nvim -ErrorAction SilentlyContinue)) {
+# Find Neovim. winget may have installed it without refreshing this shell's PATH.
+$nvimCommand = Get-Command nvim -ErrorAction SilentlyContinue
+if ($nvimCommand) {
+    $nvimExe = $nvimCommand.Source
+} else {
+    $wingetNvimExe = Join-Path $env:ProgramFiles "Neovim\bin\nvim.exe"
+    if (Test-Path -LiteralPath $wingetNvimExe) {
+        $nvimExe = $wingetNvimExe
+    }
+}
+
+if (-not $nvimExe) {
     Write-Host "Neovim is not installed. Please install Neovim first." -ForegroundColor Red
-    Write-Host "  Download from: https://github.com/neovim/neovim/releases" -ForegroundColor Yellow
-    Write-Host "  Or install via: winget install Neovim.Neovim" -ForegroundColor Yellow
-    Write-Host "  Or install via: scoop install neovim" -ForegroundColor Yellow
+    Write-Host "  Recommended: winget install --exact --id Neovim.Neovim" -ForegroundColor Yellow
+    Write-Host "  Alternative: scoop install neovim" -ForegroundColor Yellow
     exit 1
 }
 
 # Detect Neovim config path using nvim itself
 Write-Host "Detecting Neovim configuration path..." -ForegroundColor Cyan
-$nvimPathOutput = nvim --headless --noplugin +'echo stdpath("config")' +q 2>&1
-if ($nvimPathOutput) {
-    # Filter out error messages and get the actual path
-    $nvimPath = ($nvimPathOutput | Where-Object { $_ -is [string] -and $_ -match '^[A-Za-z]:\\' } | Select-Object -Last 1)
-    if ($nvimPath) {
-        $nvimPath = $nvimPath.Trim()
-    }
-}
+$nvimPath = (& $nvimExe --headless --clean '+lua io.write(vim.fn.stdpath("config"))' +q 2>&1 | Out-String).Trim()
 if (-not $nvimPath -or $nvimPath -eq "") {
     # Fallback to default Windows path
     $nvimPath = "$env:LOCALAPPDATA\nvim"
@@ -33,7 +35,7 @@ Write-Host "  Using config path: $nvimPath" -ForegroundColor Green
 # Backup existing config if it exists
 if (Test-Path $nvimPath) {
     $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
-    $backupPath = "$env:LOCALAPPDATA\nvim.backup.$timestamp"
+    $backupPath = "$nvimPath.backup.$timestamp"
     Write-Host "Backing up existing Neovim configuration..." -ForegroundColor Yellow
     Move-Item -Path $nvimPath -Destination $backupPath
     Write-Host "  Backup saved to $backupPath" -ForegroundColor Green
@@ -53,7 +55,9 @@ if ($scriptPath -and (Test-Path "$scriptPath\nvim\init.vim")) {
     Write-Host "Installing from local repository..." -ForegroundColor Cyan
     Copy-Item -Path "$scriptPath\nvim\init.vim" -Destination "$nvimPath\init.vim" -Force
     Copy-Item -Path "$scriptPath\nvim\colors\berg.vim" -Destination "$nvimPath\colors\berg.vim" -Force
+    Copy-Item -Path "$scriptPath\nvim\colors\berg-light.vim" -Destination "$nvimPath\colors\berg-light.vim" -Force
     Copy-Item -Path "$scriptPath\nvim\lua\berg.lua" -Destination "$nvimPath\lua\berg.lua" -Force
+    Copy-Item -Path "$scriptPath\nvim\lua\berg-light.lua" -Destination "$nvimPath\lua\berg-light.lua" -Force
 } else {
     # Remote installation
     Write-Host "Downloading configuration files..." -ForegroundColor Cyan
@@ -63,7 +67,9 @@ if ($scriptPath -and (Test-Path "$scriptPath\nvim\init.vim")) {
     try {
         Invoke-WebRequest -Uri "$baseUrl/nvim/init.vim" -OutFile "$nvimPath\init.vim"
         Invoke-WebRequest -Uri "$baseUrl/nvim/colors/berg.vim" -OutFile "$nvimPath\colors\berg.vim"
+        Invoke-WebRequest -Uri "$baseUrl/nvim/colors/berg-light.vim" -OutFile "$nvimPath\colors\berg-light.vim"
         Invoke-WebRequest -Uri "$baseUrl/nvim/lua/berg.lua" -OutFile "$nvimPath\lua\berg.lua"
+        Invoke-WebRequest -Uri "$baseUrl/nvim/lua/berg-light.lua" -OutFile "$nvimPath\lua\berg-light.lua"
     } catch {
         Write-Host "Failed to download configuration files" -ForegroundColor Red
         Write-Host "  Make sure you have internet connection and the repository is accessible" -ForegroundColor Yellow
@@ -83,7 +89,7 @@ try {
 
 # Install plugins
 Write-Host "Installing Neovim plugins (this may take a few minutes)..." -ForegroundColor Cyan
-$plugOutput = & nvim --headless --noplugin +'set nomore' +PlugInstall +qall 2>&1
+$plugOutput = & $nvimExe --headless --noplugin +'set nomore' +PlugInstall +qall 2>&1
 $plugOutput | ForEach-Object { Write-Host "  $_" }
 
 # Wait for plugin installation to complete
@@ -94,12 +100,16 @@ Write-Host "Verifying plugin installation..." -ForegroundColor Cyan
 $pluginPath = "$nvimPath\plugged\vim-quickui"
 if (-not (Test-Path $pluginPath)) {
     Write-Host "  Some plugins may not have installed correctly. Running second pass..." -ForegroundColor Yellow
-    $plugOutput2 = & nvim --headless --noplugin +'set nomore' +PlugInstall +qall 2>&1
+    $plugOutput2 = & $nvimExe --headless --noplugin +'set nomore' +PlugInstall +qall 2>&1
     $plugOutput2 | ForEach-Object { Write-Host "  $_" }
     Start-Sleep -Seconds 1
-} else {
-    Write-Host "  All plugins installed successfully!" -ForegroundColor Green
 }
+
+if (-not (Test-Path $pluginPath)) {
+    Write-Host "  Plugin installation failed. Run :PlugInstall in Neovim for details." -ForegroundColor Red
+    exit 1
+}
+Write-Host "  All plugins installed successfully!" -ForegroundColor Green
 
 Write-Host ""
 Write-Host "Installation complete!" -ForegroundColor Green

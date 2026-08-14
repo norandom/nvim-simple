@@ -1,9 +1,17 @@
 " Neovim Configuration - Simple Editor Mode with CUA
+" Use Neovim's platform-specific config directory on Linux, macOS, and Windows.
+let s:config_dir = stdpath('config')
+let s:plug_path = s:config_dir . '/autoload/plug.vim'
+
+augroup nvim_simple
+  autocmd!
+augroup END
+
 " Auto-install vim-plug if not found
-if empty(glob('~/.config/nvim/autoload/plug.vim'))
-  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+if empty(glob(s:plug_path))
+  silent execute '!curl -fLo ' . shellescape(s:plug_path) . ' --create-dirs'
+    \ . ' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd nvim_simple VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 " Configure plugins BEFORE loading them
@@ -19,7 +27,7 @@ let g:webdevicons_enable_airline_statusline = 0
 let g:quickui_border_style = 1
 
 " vim-plug plugins
-call plug#begin('~/.config/nvim/plugged')
+call plug#begin(s:config_dir . '/plugged')
 
 " Menu bar
 Plug 'skywind3000/vim-quickui'
@@ -64,7 +72,7 @@ set termguicolors
 set background=dark
 
 " Start in insert mode
-autocmd VimEnter * startinsert
+autocmd nvim_simple VimEnter * startinsert
 
 " CUA mode mappings (Ctrl+C/V/X/A/S/Z/Y)
 " Copy
@@ -120,7 +128,7 @@ function! AirlineTabTitle(n, ...)
     let name = bufname(bufnr)
     if empty(name)
         return '[No Name]'
-    elseif name =~ 'term://'
+    elseif name =~# 'term://'
         return 'Terminal'
     else
         return fnamemodify(name, ':t')
@@ -209,7 +217,7 @@ function! SetupQuickUI()
 endfunction
 
 " Initialize menu on startup
-autocmd VimEnter * call SetupQuickUI()
+autocmd nvim_simple VimEnter * call SetupQuickUI()
 
 function! OpenMenu()
     try
@@ -249,7 +257,7 @@ nnoremap <PageUp> i<PageUp>
 nnoremap <PageDown> i<PageDown>
 
 " Keep in insert mode when opening files
-autocmd BufReadPost * startinsert
+autocmd nvim_simple BufReadPost * startinsert
 
 " Mouse support enhancements
 set mouse=a
@@ -267,13 +275,13 @@ set incsearch
 set completeopt=menuone,noinsert,noselect
 
 " Terminal settings - clean UI and better usability
-autocmd TermOpen * setlocal nonumber norelativenumber signcolumn=no
+autocmd nvim_simple TermOpen * setlocal nonumber norelativenumber signcolumn=no
 " Auto-enter insert mode when opening terminal
-autocmd TermOpen * startinsert
+autocmd nvim_simple TermOpen * startinsert
 " Auto-enter insert mode when entering terminal buffer
-autocmd BufEnter term://* startinsert
+autocmd nvim_simple BufEnter term://* startinsert
 " Hide status line in terminal for cleaner look
-autocmd TermOpen * setlocal laststatus=0
+autocmd nvim_simple TermOpen * setlocal laststatus=0
 " Set proper environment variables for terminal encoding
 let $LANG='en_US.UTF-8'
 let $LC_ALL='en_US.UTF-8'
@@ -311,11 +319,11 @@ function! ToggleTheme()
 endfunction
 
 " Apply Berg colorscheme after plugins load
-autocmd VimEnter * ++nested colorscheme berg
+autocmd nvim_simple VimEnter * ++nested colorscheme berg
 
 " Theme toggle keybinding
 nnoremap <F4> :call ToggleTheme()<CR>
 inoremap <F4> <Esc>:call ToggleTheme()<CR>a
 
 " Show menu bar hint after everything loads
-autocmd VimEnter * echo "F10: menu | F2: explorer | F4: light/dark theme"
+autocmd nvim_simple VimEnter * echo "F10: menu | F2: explorer | F4: light/dark theme"

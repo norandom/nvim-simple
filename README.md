@@ -29,14 +29,39 @@ curl -fsSL https://raw.githubusercontent.com/norandom/nvim-simple/main/install.s
 ```
 
 #### Windows
+
+Install Neovim with `winget` (recommended):
+
+```powershell
+winget install --exact --id Neovim.Neovim
+```
+
+Close and reopen PowerShell after `winget` finishes, then verify the installation:
+
+```powershell
+nvim --version
+```
+
+If `winget` is unavailable, Scoop is an alternative:
+
+```powershell
+scoop install neovim
+```
+
+Install this configuration:
+
 ```powershell
 iwr -useb https://raw.githubusercontent.com/norandom/nvim-simple/main/install.ps1 | iex
 ```
 
-Or download and run locally:
+Or clone/download this repository and run the installer from its directory:
+
 ```powershell
+Set-ExecutionPolicy -Scope Process Bypass
 .\install.ps1
 ```
+
+The process-scoped execution-policy change applies only to the current PowerShell session. The installer uses Neovim's Windows config directory, normally `%LOCALAPPDATA%\nvim`.
 
 It will:
 - Back up any existing Neovim config
@@ -167,6 +192,22 @@ If plugins don't load:
 If colors look wrong:
 1. Make sure your terminal supports 256 colors or true color
 2. Check that `termguicolors` is enabled
+
+## Development
+
+The repository uses [pre-commit](https://pre-commit.com/) to lint the maintained Vimscript with Vint and check Lua formatting with StyLua. The vendored `nvim/autoload/plug.vim` file is excluded from Vint.
+
+Install the Git hook once after cloning:
+
+```powershell
+pre-commit install
+```
+
+Run every check manually with:
+
+```powershell
+pre-commit run --all-files
+```
 
 ## Philosophy
 
